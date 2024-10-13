@@ -1,70 +1,88 @@
 # -*- coding: UTF-8 -*-
 """PyPoll Homework Starter File."""
 
-# Import necessary modules
-import csv
+# import library
 import os
+import csv
 
-# Files to load and output (update with correct file paths)
-file_to_load = os.path.join("Resources", "election_data.csv")  # Input file path
-file_to_output = os.path.join("analysis", "election_analysis.txt")  # Output file path
+# Path to collect data from the Resources folder
+election_data_csv = os.path.join("Resources", "election_data.csv")
+ 
+# Lists to store data
+candidate_names = []
+found_candidates = []
+count_per = []
+candidate_votes = []
+candidate_list = []
 
-# Initialize variables to track the election data
-total_votes = 0  # Track the total number of votes cast
-
-# Define lists and dictionaries to track candidate names and vote counts
-
-
-# Winning Candidate and Winning Count Tracker
-
-
-# Open the CSV file and process it
-with open(file_to_load) as election_data:
-    reader = csv.reader(election_data)
-
-    # Skip the header row
-    header = next(reader)
-
-    # Loop through each row of the dataset and process it
-    for row in reader:
-
-        # Print a loading indicator (for large datasets)
-        print(". ", end="")
-
-        # Increment the total vote count for each row
+# Set variables
+total_votes = 0
+vote_for_candidate = 0
+last_count = 0
 
 
-        # Get the candidate's name from the row
+# Set path for election_data csvfile
+with open(election_data_csv) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=",")
+# Read and skip the header row 
+    csv_header = next(csv_file)
+    print(f"Header: {csv_header}")
+
+    for row in csv_reader:
+        candidate_names.append(row[2])
+# Tally all votes
+        total_votes += 1
+
+# Print this here to print in the correct order
+print('Election Results')
+print('-------------------------')
+print('Total Votes:', total_votes)
+print('-------------------------')
+
+# Find each unique name and put it in the list
+for name in candidate_names:
+    if name not in found_candidates:
+        found_candidates.append(name)
 
 
-        # If the candidate is not already in the candidate list, add them
+# Loop to find the votes for all candidates and then the percentage of their total vote
+for individual_candidate in found_candidates:
+    for vote in candidate_names:
+        if individual_candidate == vote:
+            vote_for_candidate += 1
+    percent = vote_for_candidate/len(candidate_names)
+
+    
+    
+
+    if last_count < vote_for_candidate:
+        Winner = individual_candidate
+    print(f"{individual_candidate}: {percent:.3%} ({vote_for_candidate})")
+    
+# Create lists to print to text
+    count_per.append(percent)
+    candidate_votes.append(vote_for_candidate)
+    candidate_list.append(individual_candidate)
+    
+# Resets at zero for each candidate as they loop
+    last_count = vote_for_candidate
+    vote_for_candidate = 0
 
 
-        # Add a vote to the candidate's count
+# Print the rest of the results
+print("---------------------")
+print(f"Winner: {Winner}")
+print("---------------------")
 
 
-# Open a text file to save the output
-with open(file_to_output, "w") as txt_file:
 
-    # Print the total vote count (to terminal)
-
-
-    # Write the total vote count to the text file
-
-
-    # Loop through the candidates to determine vote percentages and identify the winner
-
-
-        # Get the vote count and calculate the percentage
-
-
-        # Update the winning candidate if this one has more votes
-
-
-        # Print and save each candidate's vote count and percentage
-
-
-    # Generate and print the winning candidate summary
-
-
-    # Save the winning candidate summary to the text file
+# Print to text file
+with open('election_analysis', "w") as f:
+    f.write('Election Results\n')
+    f.write('-------------------------\n')
+    f.write(f'Total Votes: {total_votes}\n')
+    f.write('-------------------------\n')
+    for i in range(len(found_candidates)):
+        f.write(f'{candidate_list[i]}: {count_per[i]:.3%} ({candidate_votes[i]})\n')
+    f.write('------------------------\n')
+    f.write(f'Winner: {Winner}')
